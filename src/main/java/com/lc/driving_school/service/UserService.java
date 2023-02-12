@@ -6,6 +6,7 @@ import com.lc.driving_school.pojo.User;
 import com.lc.driving_school.vo.LoginVO;
 import com.lc.driving_school.vo.RegisterVO;
 import com.lc.driving_school.vo.ResponseVO;
+import com.lc.driving_school.vo.UserLoginBackVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,10 @@ public class UserService {
         if( user != null ){
             responseVO.setCode("200");
             responseVO.setMessage("登陆成功");
-            responseVO.setData("来个token");
+            UserLoginBackVO userLoginBackVO = new UserLoginBackVO();
+            userLoginBackVO.setUserName(loginVO.getUserName());
+            userLoginBackVO.setToken("123456");
+            responseVO.setData(userLoginBackVO);
         }else{
             responseVO.setCode("-1");
             responseVO.setMessage("用户名或者密码错误！");
@@ -47,8 +51,8 @@ public class UserService {
         // 定义返回值
         ResponseVO responseVO = new ResponseVO();
 
-        if(  registerVO.getUserName() == null || registerVO.getNickName() == null || registerVO.getUserPassword() == null||
-                Objects.equals(registerVO.getUserName(), "") || Objects.equals(registerVO.getNickName(), "") || Objects.equals(registerVO.getUserPassword(), "")
+        if(  registerVO.getUserName() == null || registerVO.getNickName() == null || registerVO.getPassWord() == null||
+                Objects.equals(registerVO.getUserName(), "") || Objects.equals(registerVO.getNickName(), "") || Objects.equals(registerVO.getPassWord(), "")
         ) {
             responseVO.setCode("-1");
             responseVO.setMessage("请填写完整信息注册！");
@@ -67,7 +71,7 @@ public class UserService {
             User user1 = new User();
             user1.setUserName(registerVO.getUserName());
             user1.setNickName(registerVO.getNickName());
-            user1.setUserPassword(registerVO.getUserPassword());
+            user1.setUserPassword(registerVO.getPassWord());
 
             // 存储到数据库
             int insert = userMapper.insert(user1);
