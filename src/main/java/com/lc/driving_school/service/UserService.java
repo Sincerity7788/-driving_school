@@ -37,6 +37,10 @@ public class UserService {
             responseVO.setMessage("登陆成功");
             UserLoginBackVO userLoginBackVO = new UserLoginBackVO();
             userLoginBackVO.setUserName(loginVO.getUserName());
+            userLoginBackVO.setNickName(user.getNickName());
+            userLoginBackVO.setFraction(user.getFraction());
+            userLoginBackVO.setMistake(user.getMistake());
+            userLoginBackVO.setQuantity(user.getQuantity());
             userLoginBackVO.setToken("123456");
             responseVO.setData(userLoginBackVO);
         }else{
