@@ -29,5 +29,11 @@ public class QuestionController {
         return questionService.getAllList();
     }
 
+    // 查询总数
+    @ResponseBody
+    @GetMapping("/api/v1/question/getTotal")
+    public ResponseVO getTotal(){
+        return questionService.getTotal();
+    }
 
 }

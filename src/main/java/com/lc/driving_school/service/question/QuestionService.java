@@ -16,6 +16,25 @@ public class QuestionService {
     // 引入操作数据库的mapper
     private final QuestionMapper questionMapper;
 
+    // 查询总数量
+    public ResponseVO getTotal(){
+        ResponseVO responseVO = new ResponseVO();
+
+        try{
+            // 从数据库查询
+            Integer integer = questionMapper.selectCount(null);
+
+            responseVO.setCode("00");
+            responseVO.setMessage("查询成功");
+            responseVO.setData(integer);
+        }catch (Error error){
+            responseVO.setCode("-1");
+            responseVO.setMessage("查询数据库出错!");
+            responseVO.setData(false);
+        }
+        return responseVO;
+    }
+
     // 查询所有
     public ResponseVO getAllList(){
         ResponseVO responseVO = new ResponseVO();
