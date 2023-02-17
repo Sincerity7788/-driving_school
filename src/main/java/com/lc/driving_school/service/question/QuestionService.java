@@ -54,16 +54,23 @@ public class QuestionService {
 
         // 创建查询条件
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
-        wrapper.eq("question_name", questionVO.getQuestionName());
+        wrapper.eq("question_id", questionVO.getQuestionId());
 
         // 查询是否存在同一个题目的题
         Question question = questionMapper.selectOne(wrapper);
         if(question == null){
             // 创建题目实例
             Question question1 = new Question();
-            question1.setQuestionName(questionVO.getQuestionName());
-            question1.setQuestionType(questionVO.getQuestionType());
-            question1.setQuestionImage(questionVO.getQuestionImage());
+            question1.setQuestionId(questionVO.getQuestionId());
+            question1.setTitle(questionVO.getTitle());
+            question1.setRank(questionVO.getRank());
+            question1.setType(questionVO.getType());
+            question1.setOp1(questionVO.getOp1());
+            question1.setOp2(questionVO.getOp2());
+            question1.setOp3(questionVO.getOp3());
+            question1.setOp4(questionVO.getOp4());
+            question1.setTitleType(questionVO.getTitleType());
+            question1.setTitlePic(questionVO.getTitlePic());
 
             // 插入数据库
             int insert = questionMapper.insert(question1);
