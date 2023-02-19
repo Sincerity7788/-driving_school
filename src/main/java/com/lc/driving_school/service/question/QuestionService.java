@@ -46,7 +46,7 @@ public class QuestionService {
         wrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
         // 查询数据库
         try{
-            List<Question> questions = questionMapper.selectList(wrapper);
+            Question questions = questionMapper.selectOne(wrapper);
 
             responseVO.setData(questions);
             responseVO.setCode("200");
