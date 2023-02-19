@@ -3,6 +3,7 @@ package com.lc.driving_school.service.question;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lc.driving_school.mapper.QuestionMapper;
 import com.lc.driving_school.pojo.Question;
+import com.lc.driving_school.vo.GetQuestionVO;
 import com.lc.driving_school.vo.QuestionVO;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class QuestionService {
             // 从数据库查询
             Integer integer = questionMapper.selectCount(null);
 
-            responseVO.setCode("00");
+            responseVO.setCode("200");
             responseVO.setMessage("查询成功");
             responseVO.setData(integer);
         }catch (Error error){
@@ -32,6 +33,29 @@ public class QuestionService {
             responseVO.setMessage("查询数据库出错!");
             responseVO.setData(false);
         }
+        return responseVO;
+    }
+
+    // 根据类型查询指定题
+    public ResponseVO getQuestion(GetQuestionVO getQuestionVO){
+        ResponseVO responseVO = new ResponseVO();
+        // 创建查询
+        QueryWrapper<Question> wrapper = new QueryWrapper<>();
+
+        wrapper.eq("type", getQuestionVO.getType());
+        wrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
+        // 查询数据库
+        try{
+            List<Question> questions = questionMapper.selectList(wrapper);
+
+            responseVO.setData(questions);
+            responseVO.setCode("200");
+            responseVO.setMessage("获取成功");
+        }catch (Error error){
+            responseVO.setCode("-1");
+            responseVO.setMessage("获取失败");
+        }
+
         return responseVO;
     }
 

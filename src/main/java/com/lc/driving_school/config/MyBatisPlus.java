@@ -19,7 +19,7 @@ public class MyBatisPlus {
     public PerformanceInterceptor performanceInterceptor() {
         PerformanceInterceptor paginationInterceptor = new PerformanceInterceptor();
         // 参数单位为：ms，超过此处设置的ms则该SQL不会被执行
-        paginationInterceptor.setMaxTime(100);
+        paginationInterceptor.setMaxTime(6000);
         // 格式化SQL
         paginationInterceptor.setFormat(true);
         return paginationInterceptor;

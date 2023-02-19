@@ -1,6 +1,7 @@
 package com.lc.driving_school.controller.question;
 
 import com.lc.driving_school.service.question.QuestionService;
+import com.lc.driving_school.vo.GetQuestionVO;
 import com.lc.driving_school.vo.QuestionVO;
 import com.lc.driving_school.vo.ResponseVO;
 import org.springframework.stereotype.Controller;
@@ -35,5 +36,14 @@ public class QuestionController {
     public ResponseVO getTotal(){
         return questionService.getTotal();
     }
+
+    // 获取考题
+    @ResponseBody
+    @GetMapping("/api/v1/question/getQuestion")
+    public ResponseVO getQuestion(GetQuestionVO getQuestionVO){
+        System.out.println(getQuestionVO);
+        return questionService.getQuestion(getQuestionVO);
+    }
+
 
 }
