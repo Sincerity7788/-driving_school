@@ -41,6 +41,7 @@ public class UserService {
             userLoginBackVO.setFraction(user.getFraction());
             userLoginBackVO.setMistake(user.getMistake());
             userLoginBackVO.setQuantity(user.getQuantity());
+            userLoginBackVO.setUserId(user.getId());
             userLoginBackVO.setToken("123456");
             responseVO.setData(userLoginBackVO);
         }else{

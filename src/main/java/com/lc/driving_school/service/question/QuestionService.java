@@ -1,33 +1,54 @@
 package com.lc.driving_school.service.question;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lc.driving_school.mapper.HistoryQuestionMapper;
 import com.lc.driving_school.mapper.QuestionMapper;
+import com.lc.driving_school.mapper.UserMapper;
+import com.lc.driving_school.pojo.HistoryQuestion;
 import com.lc.driving_school.pojo.Question;
+import com.lc.driving_school.pojo.User;
 import com.lc.driving_school.vo.GetQuestionVO;
+import com.lc.driving_school.vo.QuestionTotalVO;
 import com.lc.driving_school.vo.QuestionVO;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
     // 引入操作数据库的mapper
     private final QuestionMapper questionMapper;
+    // 查询历史数据
+    private final HistoryQuestionMapper historyQuestionMapper;
+
+    // 查询用户的mapper
+    private final UserMapper userMapper;
 
     // 查询总数量
-    public ResponseVO getTotal(){
+    public ResponseVO getTotal(String userId){
         ResponseVO responseVO = new ResponseVO();
 
         try{
             // 从数据库查询
             Integer integer = questionMapper.selectCount(null);
-
+            QuestionTotalVO questionTotalVO = new QuestionTotalVO();
+            questionTotalVO.setTotal(integer);
+            // 根据用户查询一下当前用户做过多少题
+            User user = userMapper.selectById(userId);
+            if( user == null  ){
+                responseVO.setCode("-1");
+                responseVO.setMessage("用户id错误!");
+                responseVO.setData(false);
+            }else{
+                questionTotalVO.setQuantity(user.getQuantity());
+            }
             responseVO.setCode("200");
             responseVO.setMessage("查询成功");
-            responseVO.setData(integer);
+            responseVO.setData(questionTotalVO);
         }catch (Error error){
             responseVO.setCode("-1");
             responseVO.setMessage("查询数据库出错!");
@@ -39,10 +60,37 @@ public class QuestionService {
     // 根据类型查询指定题
     public ResponseVO getQuestion(GetQuestionVO getQuestionVO){
         ResponseVO responseVO = new ResponseVO();
+
+        // 判断当前是错题练习
+        if(Objects.equals(getQuestionVO.getOrderType(), "3")){
+            // 根据用户id获取到错题练习的数据
+            QueryWrapper<HistoryQuestion> objectQueryWrapper = new QueryWrapper<>();
+            objectQueryWrapper.eq("user_id", getQuestionVO.getUserId());
+            objectQueryWrapper.gt("mistake", 0);
+            objectQueryWrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
+            HistoryQuestion historyQuestion = historyQuestionMapper.selectOne(objectQueryWrapper);
+
+            if( historyQuestion != null ){
+                QueryWrapper<Question> question_id = new QueryWrapper<>();
+                question_id.eq("question_id", historyQuestion.getQuestionId());
+                Question question = questionMapper.selectOne(question_id);
+                responseVO.setData(question);
+                responseVO.setCode("200");
+                responseVO.setMessage("获取成功");
+                return responseVO;
+            }else{
+                responseVO.setCode("-1");
+                responseVO.setMessage("获取失败");
+            }
+
+        }
+
+
         // 创建查询
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
 
         wrapper.eq("type", getQuestionVO.getType());
+//        wrapper.eq("title_type", "3");
         wrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
         // 查询数据库
         try{
@@ -55,7 +103,6 @@ public class QuestionService {
             responseVO.setCode("-1");
             responseVO.setMessage("获取失败");
         }
-
         return responseVO;
     }
 

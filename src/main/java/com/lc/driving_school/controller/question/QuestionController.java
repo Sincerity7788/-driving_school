@@ -33,8 +33,8 @@ public class QuestionController {
     // 查询总数
     @ResponseBody
     @GetMapping("/api/v1/question/getTotal")
-    public ResponseVO getTotal(){
-        return questionService.getTotal();
+    public ResponseVO getTotal(@RequestParam(value = "userId") String userId){
+        return questionService.getTotal(userId);
     }
 
     // 获取考题
