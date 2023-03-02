@@ -1,6 +1,7 @@
 package com.lc.driving_school.service.question;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lc.driving_school.mapper.HistoryQuestionMapper;
 import com.lc.driving_school.mapper.QuestionMapper;
 import com.lc.driving_school.mapper.UserMapper;
@@ -60,6 +61,8 @@ public class QuestionService {
     // 根据类型查询指定题
     public ResponseVO getQuestion(GetQuestionVO getQuestionVO){
         ResponseVO responseVO = new ResponseVO();
+        // 创建分页对象
+        Page<Question> objectPage = new Page<>(getQuestionVO.getPageNum(), getQuestionVO.getPageSize() );
 
         // 判断当前是错题练习
         if(Objects.equals(getQuestionVO.getOrderType(), "3")){
@@ -67,14 +70,21 @@ public class QuestionService {
             QueryWrapper<HistoryQuestion> objectQueryWrapper = new QueryWrapper<>();
             objectQueryWrapper.eq("user_id", getQuestionVO.getUserId());
             objectQueryWrapper.gt("mistake", 0);
-            objectQueryWrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
-            HistoryQuestion historyQuestion = historyQuestionMapper.selectOne(objectQueryWrapper);
 
-            if( historyQuestion != null ){
+            Page<HistoryQuestion> objectPage1 = new Page<>(getQuestionVO.getPageNum(), getQuestionVO.getPageSize());
+
+            historyQuestionMapper.selectPage(objectPage1, objectQueryWrapper);
+            if( objectPage1.getTotal()  > 0 ){
                 QueryWrapper<Question> question_id = new QueryWrapper<>();
-                question_id.eq("question_id", historyQuestion.getQuestionId());
-                Question question = questionMapper.selectOne(question_id);
-                responseVO.setData(question);
+                question_id.eq("question_id", objectPage1.getRecords().get(0).getQuestionId());
+
+                objectPage.setCurrent(1);
+                questionMapper.selectPage(objectPage, question_id);
+
+                objectPage.setTotal(objectPage1.getTotal());
+                objectPage.setPages(objectPage1.getPages());
+
+                responseVO.setData(objectPage);
                 responseVO.setCode("200");
                 responseVO.setMessage("获取成功");
                 return responseVO;
@@ -85,18 +95,14 @@ public class QuestionService {
 
         }
 
-
         // 创建查询
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
-
         wrapper.eq("type", getQuestionVO.getType());
-//        wrapper.eq("title_type", "3");
-        wrapper.last("limit " + getQuestionVO.getPageNum() + ", " + getQuestionVO.getPageSize());
+
         // 查询数据库
         try{
-            Question questions = questionMapper.selectOne(wrapper);
-
-            responseVO.setData(questions);
+            questionMapper.selectPage(objectPage, wrapper);
+            responseVO.setData(objectPage);
             responseVO.setCode("200");
             responseVO.setMessage("获取成功");
         }catch (Error error){

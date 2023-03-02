@@ -1,5 +1,6 @@
 package com.lc.driving_school.config;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -23,5 +24,12 @@ public class MyBatisPlus {
         // 格式化SQL
         paginationInterceptor.setFormat(true);
         return paginationInterceptor;
+    }
+
+    @Bean
+    public PaginationInterceptor paginationInterceptor(){
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType("mysql");
+        return page;
     }
 }

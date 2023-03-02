@@ -4,11 +4,9 @@ import com.lc.driving_school.service.UserService;
 import com.lc.driving_school.vo.LoginVO;
 import com.lc.driving_school.vo.RegisterVO;
 import com.lc.driving_school.vo.ResponseVO;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -17,6 +15,22 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource // 加载资源
     private UserService userService;
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
+
+    @ResponseBody
+    @GetMapping("/api/v1/redis/getRedis")
+    public String getRedis(String key){
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/v1/redis/setRedis")
+    public String setRedis(String key, String value){
+         redisTemplate.opsForValue().set(key, value);
+         return "成功";
+    }
 
     // 登陆
     @ResponseBody
