@@ -69,7 +69,7 @@ public class HistoryQuestionService {
         UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
         userUpdateWrapper.eq("id", addHistoryQuestionVO.getUserId());
 
-        if( !flag ){
+        if( !flag && historyQuestion1 == null){
             userUpdateWrapper.set("mistake", user.getMistake() + 1);
         }
         if( historyQuestion1 != null ){
