@@ -1,5 +1,6 @@
 package com.lc.driving_school.controller.question;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.lc.driving_school.service.question.QuestionService;
 import com.lc.driving_school.vo.GetQuestionVO;
 import com.lc.driving_school.vo.QuestionVO;
@@ -15,6 +16,20 @@ public class QuestionController {
     // 加载资源
     @Resource
     private QuestionService questionService;
+
+    // 根据下标获取指定题
+    @ResponseBody
+    @GetMapping("/api/v1/quesRen/getQuestionIndexData")
+    public ResponseVO getQuestionIndexData(@RequestParam String userId, int index){
+        return questionService.getQuestionIndexData(userId, index);
+    }
+
+    // 模拟考试
+    @ResponseBody
+    @GetMapping("/api/v1/quesRen/getRandom")
+    public ResponseVO getRandom(@RequestParam String userId){
+        return questionService.getRandom(userId);
+    }
 
     // 添加
     @ResponseBody

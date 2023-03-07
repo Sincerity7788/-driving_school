@@ -13,8 +13,11 @@ import com.lc.driving_school.vo.QuestionTotalVO;
 import com.lc.driving_school.vo.QuestionVO;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +31,56 @@ public class QuestionService {
 
     // 查询用户的mapper
     private final UserMapper userMapper;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 根据题的下标获取题的内容
+    public ResponseVO getQuestionIndexData(String userId, int index){
+        ResponseVO responseVO = new ResponseVO();
+        // 从redis中获取出来
+//        Object o = redisTemplate.opsForValue().get(userId);
+        Object index1 = redisTemplate.opsForList().index(userId, index);
+
+        responseVO.setData(index1);
+
+        return responseVO;
+    }
+
+    // 模拟考试，随机在数据库获取100条数据。在redis中存储起来
+    public ResponseVO getRandom(String userId){
+        ResponseVO responseVO = new ResponseVO();
+        // 第一步查出数据库随机100条数据
+        QueryWrapper<Question> wrapper = new QueryWrapper<>();
+        wrapper.last("order by rand() limit 100");
+
+        try{
+            List<Question> questions = questionMapper.selectList(wrapper);
+
+            // 将结果存在缓存中
+
+            ArrayList<Object> objects = new ArrayList<>();
+            objects.addAll(questions);
+
+            redisTemplate.opsForList().leftPushAll(userId, objects);
+
+
+//            for (Question question : questions) {
+//                redisTemplate.opsForList().leftPushAll(userId, question );
+//            }
+
+
+            responseVO.setCode("200");
+            responseVO.setMessage("获取成功");
+            // 返回第一题
+            responseVO.setData(questions.get(0));
+        }catch (Error error){
+            responseVO.setCode("-1");
+            responseVO.setMessage("出错啦");
+            responseVO.setData(false);
+        }
+        return responseVO;
+    }
 
     // 查询总数量
     public ResponseVO getTotal(String userId){
