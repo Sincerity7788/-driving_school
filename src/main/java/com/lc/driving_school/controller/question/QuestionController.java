@@ -17,6 +17,13 @@ public class QuestionController {
     @Resource
     private QuestionService questionService;
 
+    // 删除用户存在redis中的数据
+    @ResponseBody
+    @PostMapping("/api/v1/quesRen/deleteRedisQuestion")
+    public ResponseVO deleteRedisQuestion(@RequestParam String userId){
+        return questionService.deleteRedisQuestion(userId);
+    }
+
     // 根据下标获取指定题
     @ResponseBody
     @GetMapping("/api/v1/quesRen/getQuestionIndexData")

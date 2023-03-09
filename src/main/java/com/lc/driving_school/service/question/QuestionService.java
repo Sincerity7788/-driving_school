@@ -38,7 +38,27 @@ public class QuestionService {
     private RedisTemplate<String, Object> redisTemplate;
 
     // 退出后删除缓存的数据
+    public ResponseVO deleteRedisQuestion(String userId){
+        ResponseVO responseVO = new ResponseVO();
 
+        Boolean aBoolean = redisTemplate.hasKey("user:" + userId);
+        Boolean delete = true;
+        if(Boolean.TRUE.equals(aBoolean)){
+            delete = redisTemplate.delete("user:" + userId);
+        }
+
+        if(Boolean.TRUE.equals(delete)){
+            responseVO.setCode("200");
+            responseVO.setMessage("删除成功");
+            responseVO.setData(false);
+        }else{
+            responseVO.setCode("-1");
+            responseVO.setMessage("删除失败");
+            responseVO.setData(false);
+
+        }
+        return responseVO;
+    }
 
     // 根据题的下标获取题的内容
     public ResponseVO getQuestionIndexData(String userId, int index){
