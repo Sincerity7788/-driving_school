@@ -50,7 +50,7 @@ public class QuestionService {
         if(Boolean.TRUE.equals(delete)){
             responseVO.setCode("200");
             responseVO.setMessage("删除成功");
-            responseVO.setData(false);
+            responseVO.setData(true);
         }else{
             responseVO.setCode("-1");
             responseVO.setMessage("删除失败");
