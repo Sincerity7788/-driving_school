@@ -114,12 +114,15 @@ public class QuestionService {
     }
 
     // 查询总数量
-    public ResponseVO getTotal(String userId){
+    public ResponseVO getTotal(String userId, String type){
         ResponseVO responseVO = new ResponseVO();
 
         try{
+            // 定义查询条件
+            QueryWrapper<Question> wrapper = new QueryWrapper<>();
+            wrapper.eq("type", type);
             // 从数据库查询
-            Integer integer = questionMapper.selectCount(null);
+            Integer integer = questionMapper.selectCount(wrapper);
             QuestionTotalVO questionTotalVO = new QuestionTotalVO();
             questionTotalVO.setTotal(integer);
             // 根据用户查询一下当前用户做过多少题

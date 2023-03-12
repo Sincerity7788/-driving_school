@@ -55,8 +55,8 @@ public class QuestionController {
     // 查询总数
     @ResponseBody
     @GetMapping("/api/v1/question/getTotal")
-    public ResponseVO getTotal(@RequestParam(value = "userId") String userId){
-        return questionService.getTotal(userId);
+    public ResponseVO getTotal(@RequestParam(value = "userId") String userId, @RequestParam(value = "type") String type){
+        return questionService.getTotal(userId, type);
     }
 
     // 获取考题
