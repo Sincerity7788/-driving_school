@@ -8,13 +8,11 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class HistoryQuestion {
+public class Collect {
     @TableId
     private Long id;
     private String questionId;// 主表的题目id
-    private Integer type;// 1科目一  2科目四
-    private Integer frequency;// 做过次数
-    private Integer mistake;// 答错次数
+    private String questionTitle;// 题目的标题
     private String userId;// 用户id
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;// 创建时间

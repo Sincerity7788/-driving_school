@@ -102,6 +102,7 @@ public class HistoryQuestionService {
             HistoryQuestion historyQuestion = new HistoryQuestion();
             historyQuestion.setQuestionId(addHistoryQuestionVO.getQuestionId());
             historyQuestion.setUserId(addHistoryQuestionVO.getUserId());
+            historyQuestion.setType(addHistoryQuestionVO.getType());
 
             // 添加返回信息
             answerInfo.setFrequency(1);

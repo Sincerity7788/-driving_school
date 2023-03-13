@@ -8,4 +8,5 @@ public class AddHistoryQuestionVO {
     private String id;// 题目主表id
     private String questionId;// 题目id
     private String answer;// 答案
+    private Integer type;// 1科目一  2科目四
 }

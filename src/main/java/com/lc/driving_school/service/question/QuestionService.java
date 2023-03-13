@@ -7,13 +7,11 @@ import com.lc.driving_school.mapper.QuestionMapper;
 import com.lc.driving_school.mapper.UserMapper;
 import com.lc.driving_school.pojo.HistoryQuestion;
 import com.lc.driving_school.pojo.Question;
-import com.lc.driving_school.pojo.User;
 import com.lc.driving_school.vo.GetQuestionVO;
 import com.lc.driving_school.vo.QuestionTotalVO;
 import com.lc.driving_school.vo.QuestionVO;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -126,14 +124,12 @@ public class QuestionService {
             QuestionTotalVO questionTotalVO = new QuestionTotalVO();
             questionTotalVO.setTotal(integer);
             // 根据用户查询一下当前用户做过多少题
-            User user = userMapper.selectById(userId);
-            if( user == null  ){
-                responseVO.setCode("-1");
-                responseVO.setMessage("用户id错误!");
-                responseVO.setData(false);
-            }else{
-                questionTotalVO.setQuantity(user.getQuantity());
-            }
+            QueryWrapper<HistoryQuestion> objectQueryWrapper = new QueryWrapper<>();
+            objectQueryWrapper.eq("type",type );
+            objectQueryWrapper.eq("user_id", userId);
+            Integer integer1 = historyQuestionMapper.selectCount(objectQueryWrapper);
+            questionTotalVO.setQuantity(integer1);
+            // 定义返回值
             responseVO.setCode("200");
             responseVO.setMessage("查询成功");
             responseVO.setData(questionTotalVO);
