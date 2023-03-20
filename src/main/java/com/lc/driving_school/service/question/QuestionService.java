@@ -3,8 +3,7 @@ package com.lc.driving_school.service.question;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lc.driving_school.mapper.HistoryQuestionMapper;
-import com.lc.driving_school.mapper.QuestionMapper;
-import com.lc.driving_school.mapper.UserMapper;
+import com.lc.driving_school.mapper.QuestionMapper; 
 import com.lc.driving_school.pojo.HistoryQuestion;
 import com.lc.driving_school.pojo.Question;
 import com.lc.driving_school.vo.GetQuestionVO;
@@ -29,11 +28,10 @@ public class QuestionService {
     // 查询历史数据
     private final HistoryQuestionMapper historyQuestionMapper;
 
-    // 查询用户的mapper
-    private final UserMapper userMapper;
-
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+
 
     // 退出后删除缓存的数据
     public ResponseVO deleteRedisQuestion(String userId){
@@ -91,12 +89,13 @@ public class QuestionService {
 
             // 将结果存在缓存中
 
-            ArrayList<Object> objects = new ArrayList<>();
-            objects.addAll(questions);
+            ArrayList<Object> objects = new ArrayList<>(questions);
 
 //            redisTemplate.opsForValue().set(userId, questions, 10L, TimeUnit.SECONDS);
 
             redisTemplate.opsForList().leftPushAll("user:"+userId, objects);
+            redisTemplate.opsForValue().set("score" + userId, 0, 60L * 45, TimeUnit.SECONDS);// 设置成绩
+            redisTemplate.opsForValue().set("timeout" + userId,System.currentTimeMillis(), 60L * 45, TimeUnit.SECONDS);// 设置开始时间
             redisTemplate.expire("user:"+userId, 60L * 45, TimeUnit.SECONDS);
 
             responseVO.setCode("200");

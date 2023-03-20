@@ -12,8 +12,10 @@ import com.lc.driving_school.vo.AddHistoryQuestionVO;
 import com.lc.driving_school.vo.AnswerInfo;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +30,9 @@ public class HistoryQuestionService {
 
     // 用户的mapper
     private final UserMapper userMapper;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     // 添加
     public ResponseVO add(AddHistoryQuestionVO addHistoryQuestionVO){
@@ -51,6 +56,10 @@ public class HistoryQuestionService {
 
         // 当前题是否答对
         boolean flag = Objects.equals(answer.getAnswer(), addHistoryQuestionVO.getAnswer());
+
+        if(flag){
+            redisTemplate.opsForValue().increment(addHistoryQuestionVO.getUserId());// 设置成绩
+        }
 
         // 返回的vo
         AnswerInfo answerInfo = new AnswerInfo();
@@ -113,6 +122,7 @@ public class HistoryQuestionService {
             // 判断当前是否答错了
             if(!flag){
                 historyQuestion.setMistake(1);
+
             }
             // 插入到数据库
             int insert = historyQuestionMapper.insert(historyQuestion);
