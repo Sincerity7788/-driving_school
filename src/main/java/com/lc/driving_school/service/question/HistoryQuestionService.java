@@ -58,7 +58,7 @@ public class HistoryQuestionService {
         boolean flag = Objects.equals(answer.getAnswer(), addHistoryQuestionVO.getAnswer());
 
         if(flag){
-            redisTemplate.opsForValue().increment(addHistoryQuestionVO.getUserId());// 设置成绩
+            redisTemplate.opsForValue().increment("score" + addHistoryQuestionVO.getUserId());// 设置成绩
         }
 
         // 返回的vo

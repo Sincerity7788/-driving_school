@@ -21,8 +21,8 @@ public class HistoryTestController {
      */
     @ResponseBody
     @PostMapping("/api/v1/historyTest/addHistoryTest")
-    public ResponseVO addHistoryTest(@RequestParam String userId, @RequestParam  String userName){
-        return historyTestService.addHistoryTest(userId, userName);
+    public ResponseVO addHistoryTest(@RequestParam String userId, @RequestParam  String userName,@RequestParam  int finish){
+        return historyTestService.addHistoryTest(userId, userName, finish);
     }
 
 }

@@ -95,7 +95,7 @@ public class QuestionService {
 
             redisTemplate.opsForList().leftPushAll("user:"+userId, objects);
             redisTemplate.opsForValue().set("score" + userId, 0, 60L * 45, TimeUnit.SECONDS);// 设置成绩
-            redisTemplate.opsForValue().set("timeout" + userId,System.currentTimeMillis(), 60L * 45, TimeUnit.SECONDS);// 设置开始时间
+            redisTemplate.opsForValue().set("timeout" + userId, System.currentTimeMillis(), 60L * 45, TimeUnit.SECONDS);// 设置开始时间
             redisTemplate.expire("user:"+userId, 60L * 45, TimeUnit.SECONDS);
 
             responseVO.setCode("200");

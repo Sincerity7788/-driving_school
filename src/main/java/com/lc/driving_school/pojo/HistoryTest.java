@@ -12,6 +12,7 @@ public class HistoryTest {
     @TableId
     private Long id;
     private Integer fraction;// 考试的分数
+    private Integer finish;// 考试是否完成
     private String time;// 考试的时间
     private String userId;// 考试的用户Id
     private String userName;// 考试的用户名
