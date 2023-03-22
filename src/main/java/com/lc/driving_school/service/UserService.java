@@ -18,6 +18,32 @@ public class UserService {
     // 引入操作数据库的mapper
     private final UserMapper userMapper;
 
+    // 获取用户信息
+    public ResponseVO getUserInfo(String userId){
+        // 定义返回值
+        ResponseVO responseVO = new ResponseVO();
+        User user = userMapper.selectById(userId);
+
+        // 判断是否查到了
+        if( user != null ){
+            responseVO.setCode("200");
+            responseVO.setMessage("登陆成功");
+            UserLoginBackVO userLoginBackVO = new UserLoginBackVO();
+            userLoginBackVO.setUserName(user.getUserName());
+            userLoginBackVO.setNickName(user.getNickName());
+            userLoginBackVO.setFraction(user.getFraction());
+            userLoginBackVO.setMistake(user.getMistake());
+            userLoginBackVO.setQuantity(user.getQuantity());
+            userLoginBackVO.setUserId(user.getId());
+            userLoginBackVO.setToken("123456");
+            responseVO.setData(userLoginBackVO);
+        }else{
+            responseVO.setCode("-1");
+            responseVO.setMessage("用户userId错误！");
+        }
+        return responseVO;
+    }
+
     // 登陆方法
     public ResponseVO login(LoginVO loginVO){
         // 定义返回值

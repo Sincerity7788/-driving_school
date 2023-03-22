@@ -19,17 +19,11 @@ public class UserController {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
+    // 获取用户信息
     @ResponseBody
-    @GetMapping("/api/v1/redis/getRedis")
-    public String getRedis(String key){
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    @ResponseBody
-    @GetMapping("/api/v1/redis/setRedis")
-    public String setRedis(String key, String value){
-         redisTemplate.opsForValue().set(key, value);
-         return "成功";
+    @GetMapping("/api/v1/user/getUserInfo")
+    public ResponseVO getUserInfo(@RequestParam String userId){
+        return userService.getUserInfo(userId);
     }
 
     // 登陆

@@ -41,6 +41,8 @@ public class QuestionService {
         Boolean delete = true;
         if(Boolean.TRUE.equals(aBoolean)){
             delete = redisTemplate.delete("user:" + userId);
+            delete = redisTemplate.delete("score" + userId);
+            delete = redisTemplate.delete("timeout" + userId);
         }
 
         if(Boolean.TRUE.equals(delete)){

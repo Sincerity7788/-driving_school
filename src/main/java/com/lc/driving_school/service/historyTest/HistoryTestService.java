@@ -1,7 +1,9 @@
 package com.lc.driving_school.service.historyTest;
 
 import com.lc.driving_school.mapper.HistoryTestMapper;
+import com.lc.driving_school.mapper.UserMapper;
 import com.lc.driving_school.pojo.HistoryTest;
+import com.lc.driving_school.pojo.User;
 import com.lc.driving_school.vo.ResponseVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,6 +17,8 @@ import java.text.SimpleDateFormat;
 public class HistoryTestService {
     private final HistoryTestMapper historyTestMapper;
 
+    private final UserMapper userMapper;
+
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -22,6 +26,7 @@ public class HistoryTestService {
      * 添加考试记录
      * @params userId
      * @params userName
+     * @param finish
      */
     public ResponseVO addHistoryTest(String userId, String userName, int finish){
         ResponseVO responseVO = new ResponseVO();
@@ -47,7 +52,8 @@ public class HistoryTestService {
 
         int insert = historyTestMapper.insert(historyTest);
         if( insert == 1 ){
-
+            // 判断当前用户的最高分是否需要修改
+            judgeUserFraction(userId, o != null ? (Integer) o : 0);
             responseVO.setCode("200");
             responseVO.setMessage("保存成功");
             responseVO.setData(historyTest.getFraction());
@@ -59,5 +65,20 @@ public class HistoryTestService {
 
 
         return responseVO;
+    }
+
+    /**
+     * 判断当前用户的最高分
+     * @params userId
+     * @param finish
+     */
+    public void judgeUserFraction(String userId, int finish){
+        // 查询用户的最高分
+        User user = userMapper.selectById(userId);
+        if( user.getFraction() < finish ){
+            user.setFraction(finish);
+            // 更新
+            int update = userMapper.updateById(user);
+        }
     }
 }
