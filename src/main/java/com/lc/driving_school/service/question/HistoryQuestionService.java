@@ -2,6 +2,8 @@ package com.lc.driving_school.service.question;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lc.driving_school.mapper.AnswerMapper;
 import com.lc.driving_school.mapper.HistoryQuestionMapper;
 import com.lc.driving_school.mapper.UserMapper;
@@ -33,6 +35,40 @@ public class HistoryQuestionService {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * 获取数据
+     * @param userId
+     * @param current
+     * @param pageSize
+     * @return ResponseVO
+     */
+    public ResponseVO getList(String userId, int current, int pageSize){
+        ResponseVO responseVO = new ResponseVO();
+        // 创建分页对象
+        Page<HistoryQuestion> historyQuestionPage = new Page<>();
+        historyQuestionPage.setCurrent(current);
+        historyQuestionPage.setSize(pageSize);
+
+        QueryWrapper<HistoryQuestion> historyQuestionQueryWrapper = new QueryWrapper<>();
+        historyQuestionQueryWrapper.eq("user_id", userId);
+        historyQuestionQueryWrapper.gt("mistake", 0);
+
+        // 获取数据
+        IPage<HistoryQuestion> historyQuestionIPage = historyQuestionMapper.selectPage(historyQuestionPage, historyQuestionQueryWrapper);
+        if( historyQuestionIPage != null ){
+            responseVO.setData(historyQuestionIPage);
+            responseVO.setMessage("获取成功");
+            responseVO.setCode("200");
+        }else{
+            responseVO.setData(false);
+            responseVO.setMessage("获取失败");
+            responseVO.setCode("-1");
+        }
+
+
+        return responseVO;
+    }
 
     // 添加
     public ResponseVO add(AddHistoryQuestionVO addHistoryQuestionVO){
@@ -112,6 +148,7 @@ public class HistoryQuestionService {
             historyQuestion.setQuestionId(addHistoryQuestionVO.getQuestionId());
             historyQuestion.setUserId(addHistoryQuestionVO.getUserId());
             historyQuestion.setType(addHistoryQuestionVO.getType());
+            historyQuestion.setQuestionTitle(addHistoryQuestionVO.getQuestionTitle());
 
             // 添加返回信息
             answerInfo.setFrequency(1);

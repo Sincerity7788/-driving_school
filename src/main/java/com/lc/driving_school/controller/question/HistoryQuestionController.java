@@ -15,6 +15,19 @@ public class HistoryQuestionController {
     @Resource
     private HistoryQuestionService historyQuestionService;
 
+    /**
+     * 获取数据
+     * @param userId
+     * @param current
+     * @param pageSize
+     * @return ResponseVO
+     */
+    @ResponseBody
+    @GetMapping("/api/v1/historyQuestion/getList")
+    public ResponseVO getList(@RequestParam String userId,@RequestParam int current,@RequestParam(defaultValue = "10") int pageSize){
+        return historyQuestionService.getList(userId, current, pageSize);
+    }
+
     // 获取全部
     @ResponseBody
     @GetMapping("/api/v1/historyQuestion/getAll")

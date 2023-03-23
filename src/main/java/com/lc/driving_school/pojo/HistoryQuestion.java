@@ -12,6 +12,7 @@ public class HistoryQuestion {
     @TableId
     private Long id;
     private String questionId;// 主表的题目id
+    private String questionTitle;// 题目标题
     private Integer type;// 1科目一  2科目四
     private Integer frequency;// 做过次数
     private Integer mistake;// 答错次数
